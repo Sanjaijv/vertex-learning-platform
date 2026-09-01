@@ -1,4 +1,5 @@
-import { Bell, UserRound } from "lucide-react";
+import { SignInButton, SignUpButton, Show, UserButton } from "@clerk/nextjs";
+import { Bell } from "lucide-react";
 import Link from "next/link";
 import { VertexLogo } from "./ui";
 
@@ -12,7 +13,17 @@ export function SiteHeader() {
       </nav>
       <div className="site-header-actions">
         <button type="button" className="icon-button" aria-label="Notifications"><Bell /></button>
-        <span className="avatar" aria-label="Account" role="img"><UserRound /></span>
+        <Show when="signed-out">
+          <SignInButton mode="modal">
+            <button type="button" className="btn btn-tertiary">Sign in</button>
+          </SignInButton>
+          <SignUpButton mode="modal">
+            <button type="button" className="btn btn-primary">Sign up</button>
+          </SignUpButton>
+        </Show>
+        <Show when="signed-in">
+          <UserButton />
+        </Show>
       </div>
     </div>
   </header>;
