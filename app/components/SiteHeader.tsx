@@ -3,6 +3,9 @@ import { Bell } from "lucide-react";
 import Link from "next/link";
 import { VertexLogo } from "./ui";
 
+/**
+ * Main site header with navigation and authentication controls
+ */
 export function SiteHeader() {
   return <header className="site-header">
     <div className="site-header-inner">

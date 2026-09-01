@@ -1,5 +1,9 @@
 import { defineArrayMember, defineField, defineType } from 'sanity'
 
+/**
+ * Module object type schema
+ * Represents a course module containing an ordered list of lessons
+ */
 export const module_ = defineType({
   name: 'module',
   title: 'Module',

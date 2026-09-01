@@ -8,6 +8,10 @@ import { module_ } from './objects/module'
 import { outcome } from './objects/outcome'
 import { resource } from './objects/resource'
 
+/**
+ * Sanity schema configuration
+ * Exports all document and object type definitions for the Vertex content model
+ */
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [course, lesson, instructor, category, module_, outcome, resource],
 }

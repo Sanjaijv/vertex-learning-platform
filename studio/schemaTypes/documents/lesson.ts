@@ -1,6 +1,10 @@
 import { PlayIcon } from '@sanity/icons'
 import { defineArrayMember, defineField, defineType } from 'sanity'
 
+/**
+ * Lesson document type schema
+ * Represents an individual video lesson with notes, resources, and metadata
+ */
 export const lesson = defineType({
   name: 'lesson',
   title: 'Lesson',

@@ -33,6 +33,9 @@ const courses = [
   },
 ];
 
+/**
+ * Home page displaying hero section with search and featured courses
+ */
 export default function Home() {
   return <>
     <SiteHeader />

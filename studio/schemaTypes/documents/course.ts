@@ -1,6 +1,10 @@
 import { DocumentTextIcon } from '@sanity/icons'
 import { defineArrayMember, defineField, defineType } from 'sanity'
 
+/**
+ * Course document type schema
+ * Represents a complete course with modules, lessons, and marketing metadata
+ */
 export const course = defineType({
   name: 'course',
   title: 'Course',
