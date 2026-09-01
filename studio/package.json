@@ -6,19 +6,25 @@
     "dev": "sanity dev",
     "build": "sanity build",
     "deploy": "sanity deploy",
-    "typegen": "sanity schemas extract --force && sanity typegen generate"
+    "typegen": "sanity schemas extract --force && sanity typegen generate",
+    "ingest-videos": "tsx scripts/ingest-videos.ts"
   },
   "dependencies": {
+    "@sanity/client": "^8.4.0",
     "@sanity/icons": "^3.7.4",
     "@sanity/vision": "^5.31.2",
     "react": "^19",
     "react-dom": "^19",
     "sanity": "^5.31.2",
-    "styled-components": "^6.5.3"
+    "styled-components": "^6.5.3",
+    "youtube-dl-exec": "^3.1.13"
   },
   "devDependencies": {
+    "@types/node": "^20.19.43",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv": "^17.4.2",
+    "tsx": "^4.23.13",
     "typescript": "^5"
   }
 }
