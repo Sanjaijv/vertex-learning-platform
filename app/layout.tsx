@@ -11,6 +11,11 @@ export const metadata: Metadata = {
   description: "Search your learning in plain English.",
 };
 
+/**
+ * Root layout component that wraps all pages with fonts and authentication provider.
+ * @param children - Page content to render
+ * @returns HTML document structure with Clerk provider and custom fonts
+ */
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return <html lang="en" className={`${inter.variable} ${playfairDisplay.variable}`}><body><ClerkProvider>{children}</ClerkProvider></body></html>;
 }

@@ -41,13 +41,29 @@ const radius = [
 ];
 const iconSet: LucideIcon[] = [Bell, Search, Play, FileText, Bookmark, BarChart3, Clock3, UserRound, ChevronRight];
 
+/**
+ * Renders a section heading with a number prefix.
+ * @param number - Section number to display
+ * @param children - Heading text content
+ * @returns Formatted section heading
+ */
 function SectionHeading({ number, children }: { number: string; children: React.ReactNode }) {
   return <h2 className="section-heading"><span>{number}</span>{children}</h2>;
 }
+
+/**
+ * Renders a list of items separated by dots.
+ * @param items - Array of strings to display
+ * @returns Dot-separated list component
+ */
 function DotList({ items }: { items: string[] }) {
   return <div className="dot-list">{items.map((item) => <span key={item}>{item}</span>)}</div>;
 }
 
+/**
+ * Design system documentation page displaying colors, typography, spacing, and components.
+ * @returns Complete design system reference page
+ */
 export default function DesignSystemPage() {
   return <main className="design-page">
     <section className="hero-grid panel" aria-labelledby="page-title">

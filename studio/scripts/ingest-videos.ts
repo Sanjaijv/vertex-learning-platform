@@ -33,25 +33,41 @@ type Chapter = { startSeconds: number; label: string }
 type Chunk = { startSeconds: number; text: string }
 type Fragment = { startSeconds: number; text: string }
 
+/**
+ * Converts a time string in HH:MM:SS format to total seconds.
+ * @param t - Time string in HH:MM:SS format
+ * @returns Total number of seconds
+ */
 function timeToSeconds(t: string): number {
   const [h, m, s] = t.split(':')
   return Number(h) * 3600 + Number(m) * 60 + Number(s)
 }
 
+/**
+ * Checks if two string arrays are equal by comparing elements in order.
+ * @param a - First string array
+ * @param b - Second string array
+ * @returns True if arrays have the same length and all elements match
+ */
 function wordArraysEqual(a: string[], b: string[]): boolean {
   if (a.length !== b.length) return false
   for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false
   return true
 }
 
-// YouTube auto-caption VTT is "roll-up" style: each cue shows a sliding
-// window of the last couple of lines, so older words scroll out of a cue's
-// text before it settles. This strips the <c>/timing markup from each cue's
-// text, then finds the longest overlap between the end of the transcript
-// accumulated so far and the start of the current cue — only the words past
-// that overlap are new and get appended, so nothing is duplicated even when
-// a cue's visible window has dropped earlier words a plain prefix diff would
-// have expected to see.
+/**
+ * Parses YouTube auto-caption VTT format into timestamped text fragments.
+ * YouTube auto-caption VTT is "roll-up" style: each cue shows a sliding
+ * window of the last couple of lines, so older words scroll out of a cue's
+ * text before it settles. This strips the <c>/timing markup from each cue's
+ * text, then finds the longest overlap between the end of the transcript
+ * accumulated so far and the start of the current cue — only the words past
+ * that overlap are new and get appended, so nothing is duplicated even when
+ * a cue's visible window has dropped earlier words a plain prefix diff would
+ * have expected to see.
+ * @param vtt - VTT format subtitle content
+ * @returns Array of fragments with start time and text
+ */
 function parseAutoCaptionVtt(vtt: string): Fragment[] {
   const fragments: Fragment[] = []
   const blocks = vtt.split(/\n\s*\n/)
@@ -92,6 +108,11 @@ function parseAutoCaptionVtt(vtt: string): Fragment[] {
   return fragments
 }
 
+/**
+ * Groups transcript fragments into fixed-duration chunks.
+ * @param fragments - Array of timestamped text fragments
+ * @returns Array of chunks with aggregated text for each time window
+ */
 function chunkFragments(fragments: Fragment[]): Chunk[] {
   if (fragments.length === 0) return []
   const chunks: Chunk[] = []
@@ -110,6 +131,11 @@ function chunkFragments(fragments: Fragment[]): Chunk[] {
   return chunks
 }
 
+/**
+ * Fetches chapters and transcript for a single YouTube video.
+ * @param youtubeId - YouTube video ID
+ * @returns Object containing chapters array and transcript chunks array
+ */
 async function ingestOne(youtubeId: string): Promise<{ chapters: Chapter[]; chunks: Chunk[] }> {
   const url = `https://www.youtube.com/watch?v=${youtubeId}`
 
@@ -148,6 +174,11 @@ async function ingestOne(youtubeId: string): Promise<{ chapters: Chapter[]; chun
   return { chapters, chunks }
 }
 
+/**
+ * Main entry point that processes all videos and stores them in Sanity.
+ * Fetches video metadata, chapters, and transcripts from YouTube, then creates
+ * or updates video documents in the Sanity dataset.
+ */
 async function main() {
   const entries = Object.values(videos as Record<string, { id: string }>)
   const seenIds = new Set<string>()

@@ -33,6 +33,10 @@ const courses = [
   },
 ];
 
+/**
+ * Home page component displaying hero section, search bar, and featured courses.
+ * @returns Home page layout with intelligent learning features
+ */
 export default function Home() {
   return <>
     <SiteHeader />
