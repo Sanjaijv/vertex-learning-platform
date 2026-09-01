@@ -162,7 +162,10 @@ async function main() {
     try {
       const { chapters, chunks } = await ingestOne(youtubeId)
       await client.createOrReplace({
-        _id: `video.${youtubeId}`,
+        // "yt-" prefix keeps the id valid even when a YouTube id itself
+        // starts with a hyphen (e.g. "-QVoIxEpFkM"), which Sanity rejects
+        // as the first character right after the "video." separator.
+        _id: `video.yt-${youtubeId}`,
         _type: 'video',
         id: youtubeId,
         url: `https://www.youtube.com/watch?v=${youtubeId}`,
