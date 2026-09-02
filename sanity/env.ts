@@ -14,13 +14,6 @@ export const projectId = assertValue(
   'Missing environment variable: NEXT_PUBLIC_SANITY_PROJECT_ID'
 )
 
-/**
- * Asserts that a required environment variable is defined
- * @param v - The value to check
- * @param errorMessage - Error message to throw if value is undefined
- * @returns The value if defined
- * @throws Error if value is undefined
- */
 function assertValue<T>(v: T | undefined, errorMessage: string): T {
   if (v === undefined) {
     throw new Error(errorMessage)
