@@ -1,5 +1,9 @@
 import { defineField, defineType } from 'sanity'
 
+/**
+ * Outcome object type schema
+ * Represents a learning outcome with icon, title, and description for "What you'll learn" sections
+ */
 export const outcome = defineType({
   name: 'outcome',
   title: 'Outcome',

@@ -3,12 +3,6 @@ import { Bell } from "lucide-react";
 import Link from "next/link";
 import { VertexLogo } from "./ui";
 
-/**
- * Renders the main site header with navigation and authentication controls.
- * Displays the Vertex logo, main navigation links, notifications bell, and
- * sign in/sign up buttons for unauthenticated users or user menu for authenticated users.
- * @returns Site header component
- */
 export function SiteHeader() {
   return <header className="site-header">
     <div className="site-header-inner">
