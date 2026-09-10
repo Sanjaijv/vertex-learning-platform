@@ -1,6 +1,10 @@
 import { TagIcon } from '@sanity/icons'
 import { defineField, defineType } from 'sanity'
 
+/**
+ * Category document type schema
+ * Represents a course category for organization and filtering
+ */
 export const category = defineType({
   name: 'category',
   title: 'Category',

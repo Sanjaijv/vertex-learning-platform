@@ -1,5 +1,9 @@
 import { defineField, defineType } from 'sanity'
 
+/**
+ * Resource object type schema
+ * Represents a downloadable or external resource associated with a lesson
+ */
 export const resource = defineType({
   name: 'resource',
   title: 'Resource',

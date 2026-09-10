@@ -1,6 +1,10 @@
 import { UserIcon } from '@sanity/icons'
 import { defineArrayMember, defineField, defineType } from 'sanity'
 
+/**
+ * Instructor document type schema
+ * Represents a course instructor with profile information
+ */
 export const instructor = defineType({
   name: 'instructor',
   title: 'Instructor',

@@ -1,6 +1,10 @@
 import { DocumentTextIcon } from '@sanity/icons'
 import { defineArrayMember, defineField, defineType } from 'sanity'
 
+/**
+ * Course document type schema
+ * Represents a complete course with modules, lessons, and marketing metadata
+ */
 export const course = defineType({
   name: 'course',
   title: 'Course',
@@ -60,10 +64,10 @@ export const course = defineType({
       initialValue: 0,
     }),
     defineField({
-      name: 'outcomes',
+      name: 'learningOutcomes',
       title: "What you'll learn",
       type: 'array',
-      of: [defineArrayMember({ type: 'outcome' })],
+      of: [defineArrayMember({ type: 'learningOutcome' })],
       validation: (rule) => rule.min(1),
     }),
     defineField({

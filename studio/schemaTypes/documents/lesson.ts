@@ -1,6 +1,10 @@
 import { PlayIcon } from '@sanity/icons'
 import { defineArrayMember, defineField, defineType } from 'sanity'
 
+/**
+ * Lesson document type schema
+ * Represents an individual video lesson with notes, resources, and metadata
+ */
 export const lesson = defineType({
   name: 'lesson',
   title: 'Lesson',
@@ -34,9 +38,9 @@ export const lesson = defineType({
     }),
     defineField({
       name: 'duration',
-      description: 'Display duration, e.g. "12:34".',
-      type: 'string',
-      validation: (rule) => rule.required(),
+      title: 'Duration (seconds)',
+      type: 'number',
+      validation: (rule) => rule.required().min(0),
     }),
     defineField({
       name: 'freePreview',

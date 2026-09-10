@@ -23,6 +23,13 @@ export default defineConfig({
   plugins: [structureTool({ structure }), visionTool()],
 })
 
+/**
+ * Asserts that a required environment variable is defined
+ * @param v - The value to check
+ * @param errorMessage - Error message to throw if value is undefined
+ * @returns The value if defined
+ * @throws Error if value is undefined
+ */
 function assertValue<T>(v: T | undefined, errorMessage: string): T {
   if (v === undefined) {
     throw new Error(errorMessage)

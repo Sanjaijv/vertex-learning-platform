@@ -44,6 +44,7 @@ const iconSet: LucideIcon[] = [Bell, Search, Play, FileText, Bookmark, BarChart3
 function SectionHeading({ number, children }: { number: string; children: React.ReactNode }) {
   return <h2 className="section-heading"><span>{number}</span>{children}</h2>;
 }
+
 function DotList({ items }: { items: string[] }) {
   return <div className="dot-list">{items.map((item) => <span key={item}>{item}</span>)}</div>;
 }

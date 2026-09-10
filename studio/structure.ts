@@ -1,5 +1,9 @@
 import type { StructureResolver } from 'sanity/structure'
 
+/**
+ * Sanity Studio structure configuration
+ * Defines the document list organization in the Studio sidebar
+ */
 export const structure: StructureResolver = (S) =>
   S.list()
     .title('Content')
