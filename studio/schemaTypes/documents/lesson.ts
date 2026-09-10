@@ -38,9 +38,9 @@ export const lesson = defineType({
     }),
     defineField({
       name: 'duration',
-      description: 'Display duration, e.g. "12:34".',
-      type: 'string',
-      validation: (rule) => rule.required(),
+      title: 'Duration (seconds)',
+      type: 'number',
+      validation: (rule) => rule.required().min(0),
     }),
     defineField({
       name: 'freePreview',

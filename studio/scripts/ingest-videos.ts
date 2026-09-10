@@ -32,6 +32,8 @@ const client = createClient({
 type Chapter = { startSeconds: number; label: string }
 type Chunk = { startSeconds: number; text: string }
 type Fragment = { startSeconds: number; text: string }
+type YouTubeChapter = { start_time: number; title: string }
+type YouTubeVideoInfo = { chapters?: YouTubeChapter[] }
 
 /**
  * Converts a time string in HH:MM:SS format to total seconds.
@@ -72,7 +74,7 @@ function parseAutoCaptionVtt(vtt: string): Fragment[] {
   const fragments: Fragment[] = []
   const blocks = vtt.split(/\n\s*\n/)
   const cueTimeRe = /^(\d{2}:\d{2}:\d{2}\.\d{3}) --> (\d{2}:\d{2}:\d{2}\.\d{3})/
-  let fullWords: string[] = []
+  const fullWords: string[] = []
 
   for (const block of blocks) {
     const lines = block.split('\n').map((l) => l.trim())
@@ -139,15 +141,15 @@ function chunkFragments(fragments: Fragment[]): Chunk[] {
 async function ingestOne(youtubeId: string): Promise<{ chapters: Chapter[]; chunks: Chunk[] }> {
   const url = `https://www.youtube.com/watch?v=${youtubeId}`
 
-  const info: any = await youtubedl(url, {
+  const info = (await youtubedl(url, {
     dumpSingleJson: true,
     skipDownload: true,
     noWarnings: true,
-  })
+  })) as unknown as YouTubeVideoInfo
 
-  const chapters: Chapter[] = (info.chapters ?? []).map((c: any) => ({
-    startSeconds: Math.round(c.start_time),
-    label: c.title,
+  const chapters: Chapter[] = (info.chapters ?? []).map((chapter) => ({
+    startSeconds: Math.round(chapter.start_time),
+    label: chapter.title,
   }))
 
   let chunks: Chunk[] = []

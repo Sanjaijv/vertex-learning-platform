@@ -1,39 +1,16 @@
 import { ArrowRight, BarChart3, Clock3, Folder, Search, Star } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { SiteHeader } from "./components/SiteHeader";
 import { MetaIcon } from "./components/ui";
+import { formatDuration } from "./lib/format";
+import { formatLevel } from "./lib/level";
+import { getCourses } from "@/sanity/lib/data";
+import { urlFor } from "@/sanity/lib/image";
 
-const courses = [
-  {
-    slug: "nextjs-for-production",
-    tile: <span className="course-tile course-tile-nextjs">N</span>,
-    title: "Next.js for Production",
-    description: "Build scalable, high-performance web applications with Next.js.",
-    level: "Intermediate",
-    duration: "18h 24m",
-    modules: "12 modules",
-  },
-  {
-    slug: "docker-essentials",
-    tile: <span className="course-tile course-tile-docker" aria-hidden="true">🐳</span>,
-    title: "Docker Essentials",
-    description: "Containerize applications and streamline your development workflow.",
-    level: "Beginner",
-    duration: "10h 12m",
-    modules: "8 modules",
-  },
-  {
-    slug: "typescript-deep-dive",
-    tile: <span className="course-tile course-tile-typescript">TS</span>,
-    title: "TypeScript Deep Dive",
-    description: "Go beyond the basics and write safer, more expressive code.",
-    level: "Intermediate",
-    duration: "14h 36m",
-    modules: "10 modules",
-  },
-];
+export default async function Home() {
+  const courses = (await getCourses()).slice(0, 3);
 
-export default function Home() {
   return <>
     <SiteHeader />
     <main className="home-page">
@@ -56,16 +33,24 @@ export default function Home() {
           <Link href="/courses" className="btn btn-text">View all courses <ArrowRight /></Link>
         </div>
         <div className="home-cards-grid">
-          {courses.map((course) => <article className="sample-card home-course-card" key={course.slug}>
-            {course.tile}
+          {courses.map((course) => <Link href={`/courses/${course.slug}`} className="sample-card home-course-card" key={course._id}>
+            {course.coverImage ? (
+              <Image
+                className="home-course-thumb"
+                src={urlFor(course.coverImage).width(112).height(112).url()}
+                alt=""
+                width={56}
+                height={56}
+              />
+            ) : null}
             <h3>{course.title}</h3>
-            <p>{course.description}</p>
+            <p>{course.summary}</p>
             <div className="card-meta">
-              <MetaIcon icon={BarChart3}>{course.level}</MetaIcon>
-              <MetaIcon icon={Clock3}>{course.duration}</MetaIcon>
-              <MetaIcon icon={Folder}>{course.modules}</MetaIcon>
+              <MetaIcon icon={BarChart3}>{formatLevel(course.level)}</MetaIcon>
+              <MetaIcon icon={Clock3}>{formatDuration(course.totalSeconds ?? 0)}</MetaIcon>
+              <MetaIcon icon={Folder}>{course.moduleCount ?? 0} modules</MetaIcon>
             </div>
-          </article>)}
+          </Link>)}
         </div>
       </section>
 

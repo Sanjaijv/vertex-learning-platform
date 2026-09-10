@@ -64,10 +64,10 @@ export const course = defineType({
       initialValue: 0,
     }),
     defineField({
-      name: 'outcomes',
+      name: 'learningOutcomes',
       title: "What you'll learn",
       type: 'array',
-      of: [defineArrayMember({ type: 'outcome' })],
+      of: [defineArrayMember({ type: 'learningOutcome' })],
       validation: (rule) => rule.min(1),
     }),
     defineField({
