@@ -1,6 +1,7 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
+import { PostHogIdentity } from "./components/PostHogIdentity";
 import "./globals.css";
 
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"], display: "swap" });
@@ -12,5 +13,5 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
-  return <html lang="en" className={`${inter.variable} ${playfairDisplay.variable}`}><body><ClerkProvider>{children}</ClerkProvider></body></html>;
+  return <html lang="en" className={`${inter.variable} ${playfairDisplay.variable}`}><body><ClerkProvider><PostHogIdentity />{children}</ClerkProvider></body></html>;
 }
