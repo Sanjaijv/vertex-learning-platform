@@ -1,10 +1,11 @@
-import { ArrowRight, BarChart3, Clock3, Folder, Users } from "lucide-react";
+import { BarChart3, Clock3, Folder, Users } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Bookmark } from "@/app/components/Bookmark";
 import { CourseContent } from "@/app/components/CourseContent";
+import { CourseStartLink } from "@/app/components/CourseStartLink";
 import { SiteHeader } from "@/app/components/SiteHeader";
 import { Badge, MetaIcon } from "@/app/components/ui";
 import { formatDuration, formatStudentCount } from "@/app/lib/format";
@@ -75,13 +76,11 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
               <MetaIcon icon={Users}>{formatStudentCount(course.studentCount ?? 0)} students</MetaIcon>
             </div>
             <div className="course-hero-actions">
-              <Link
+              <CourseStartLink
+                courseSlug={slug}
                 href={firstLessonSlug ? `/lessons/${firstLessonSlug}` : "#"}
-                className="btn btn-primary"
-              >
-                Start Course <ArrowRight />
-              </Link>
-              <Bookmark />
+              />
+              <Bookmark courseSlug={slug} />
             </div>
           </div>
         </section>
@@ -113,7 +112,7 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
               {modules.length} modules &bull; {formatDuration(totalSeconds)}
             </span>
           </div>
-          <CourseContent modules={modules} />
+          <CourseContent courseSlug={slug} modules={modules} />
         </section>
       </main>
     </>

@@ -2,6 +2,7 @@
 
 import { ChevronDown, Clock3, LockKeyhole, Play } from "lucide-react";
 import Link from "next/link";
+import posthog from "posthog-js";
 import { useState } from "react";
 import { formatDuration } from "../lib/format";
 
@@ -21,12 +22,38 @@ type CourseModule = {
 
 const VISIBLE_LIMIT = 6;
 
-export function CourseContent({ modules }: { modules: CourseModule[] }) {
+export function CourseContent({ courseSlug, modules }: { courseSlug: string; modules: CourseModule[] }) {
   const [expanded, setExpanded] = useState<Record<number, boolean>>({});
   const [showAll, setShowAll] = useState(false);
 
   const visibleModules = showAll ? modules : modules.slice(0, VISIBLE_LIMIT);
   const hasMore = modules.length > VISIBLE_LIMIT;
+
+  const handleModuleToggle = (index: number, isOpen: boolean, lessonCount: number) => {
+    setExpanded((current) => ({ ...current, [index]: !isOpen }));
+
+    if (process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN && process.env.NEXT_PUBLIC_POSTHOG_HOST) {
+      posthog.capture("course_module_toggled", {
+        course_slug: courseSlug,
+        module_position: index + 1,
+        lesson_count: lessonCount,
+        action: isOpen ? "collapsed" : "expanded",
+      });
+    }
+  };
+
+  const handleModulesListToggle = () => {
+    const willShowAll = !showAll;
+    setShowAll(willShowAll);
+
+    if (process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN && process.env.NEXT_PUBLIC_POSTHOG_HOST) {
+      posthog.capture("course_modules_list_toggled", {
+        course_slug: courseSlug,
+        module_count: modules.length,
+        action: willShowAll ? "shown" : "hidden",
+      });
+    }
+  };
 
   return (
     <div className="course-content-list">
@@ -40,7 +67,7 @@ export function CourseContent({ modules }: { modules: CourseModule[] }) {
               type="button"
               className="course-content-row-head"
               aria-expanded={isOpen}
-              onClick={() => setExpanded((current) => ({ ...current, [index]: !isOpen }))}
+              onClick={() => handleModuleToggle(index, isOpen, module.lessons.length)}
             >
               <span className="course-content-number">{index + 1}</span>
               <span className="course-content-row-text">
@@ -70,7 +97,7 @@ export function CourseContent({ modules }: { modules: CourseModule[] }) {
         );
       })}
       {hasMore && (
-        <button type="button" className="btn btn-tertiary course-content-toggle" onClick={() => setShowAll((value) => !value)}>
+        <button type="button" className="btn btn-tertiary course-content-toggle" onClick={handleModulesListToggle}>
           {showAll ? "Show less" : `Show all ${modules.length} modules`}
           <ChevronDown className={showAll ? "chevron-open" : undefined} aria-hidden="true" />
         </button>
