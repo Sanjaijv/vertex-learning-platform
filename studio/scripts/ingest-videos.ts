@@ -12,11 +12,11 @@ const CHUNK_SECONDS = 20
 
 const projectId = process.env.SANITY_STUDIO_PROJECT_ID
 const dataset = process.env.SANITY_STUDIO_DATASET
-const token = process.env.SANITY_STUDIO_WRITE_TOKEN
+const token = process.env.VERTEX_SANITY_WRITE_TOKEN
 
 if (!projectId || !dataset || !token) {
   console.error(
-    'Missing SANITY_STUDIO_PROJECT_ID, SANITY_STUDIO_DATASET, or SANITY_STUDIO_WRITE_TOKEN in the environment.',
+    'Missing SANITY_STUDIO_PROJECT_ID, SANITY_STUDIO_DATASET, or VERTEX_SANITY_WRITE_TOKEN in the environment.',
   )
   process.exit(1)
 }
