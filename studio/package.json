@@ -6,8 +6,9 @@
     "dev": "sanity dev",
     "build": "sanity build",
     "deploy": "sanity deploy",
-    "typegen": "sanity schemas extract --force && sanity typegen generate",
-    "ingest-videos": "tsx scripts/ingest-videos.ts"
+    "typegen": "sanity schemas extract && sanity typegen generate",
+    "ingest-videos": "tsx scripts/ingest-videos.ts",
+    "import-search-context": "tsx scripts/import-search-context.ts"
   },
   "dependencies": {
     "@sanity/client": "^8.4.0",

@@ -83,9 +83,11 @@ export const COURSE_FOR_LESSON_QUERY = defineQuery(`
     _id,
     title,
     "slug": slug.current,
+    level,
+    instructor->{ name, "slug": slug.current },
     modules[]{
       title,
-      lessons[]->{ _id, title, "slug": slug.current },
+      lessons[]->{ _id, title, "slug": slug.current, duration },
     },
   }
 `)
