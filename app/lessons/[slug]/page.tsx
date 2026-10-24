@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { LessonBookmark } from "@/app/components/LessonBookmark";
 import { LessonOutline, type OutlineModule } from "@/app/components/LessonOutline";
 import { LessonTabs } from "@/app/components/LessonTabs";
+import { LessonVideo } from "@/app/components/LessonVideo";
 import { SiteHeader } from "@/app/components/SiteHeader";
 import { MetaIcon } from "@/app/components/ui";
 import { formatDuration } from "@/app/lib/format";
@@ -121,21 +122,20 @@ export default async function LessonPage({ params, searchParams }: PageProps) {
             <MetaIcon icon={Users}>{(lesson.studentCount ?? 0).toLocaleString("en-US")} students</MetaIcon>
           </div>
           <div className="lesson-player">
-            {embedUrl ? <iframe
-              key={embedUrl}
-              src={embedUrl}
-              title={`${lesson.title} video`}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              referrerPolicy="strict-origin-when-cross-origin"
-              allowFullScreen
-            /> : <div className="lesson-player-unavailable">Video playback is unavailable for this lesson.</div>}
+            <LessonVideo
+              embedUrl={embedUrl}
+              courseSlug={course.slug}
+              lessonSlug={lesson.slug ?? slug}
+              startSeconds={startSeconds}
+              durationSeconds={lesson.duration ?? 0}
+            />
           </div>
-          <LessonTabs content={content} notes={notesContent} />
+          <LessonTabs content={content} notes={notesContent} courseSlug={course.slug} lessonSlug={lesson.slug ?? slug} />
         </main>
       </div>
       <nav className="lesson-footer" aria-label="Lesson navigation">
-        {previous?.slug ? <Link href={`/lessons/${previous.slug}`} className="lesson-footer-previous"><span className="lesson-footer-button"><ArrowLeft aria-hidden="true" />Previous Lesson</span><span className="lesson-footer-label">{previous.title}<small>{formatDuration(previous.duration ?? 0)}</small></span></Link> : <span />}
-        {next?.slug ? <Link href={`/lessons/${next.slug}`} className="lesson-footer-next"><span className="lesson-footer-label">{next.title}<small>{formatDuration(next.duration ?? 0)}</small></span><span className="lesson-footer-button">Next Lesson<ArrowRight aria-hidden="true" /></span></Link> : <span />}
+        {previous?.slug ? <a href={`/lessons/${previous.slug}`} className="lesson-footer-previous"><span className="lesson-footer-button"><ArrowLeft aria-hidden="true" />Previous Lesson</span><span className="lesson-footer-label">{previous.title}<small>{formatDuration(previous.duration ?? 0)}</small></span></a> : <span />}
+        {next?.slug ? <a href={`/lessons/${next.slug}`} className="lesson-footer-next"><span className="lesson-footer-label">{next.title}<small>{formatDuration(next.duration ?? 0)}</small></span><span className="lesson-footer-button">Next Lesson<ArrowRight aria-hidden="true" /></span></a> : <span />}
       </nav>
     </div>
   </>;

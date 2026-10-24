@@ -34,6 +34,7 @@ type Chunk = { startSeconds: number; text: string }
 type Fragment = { startSeconds: number; text: string }
 type YouTubeChapter = { start_time: number; title: string }
 type YouTubeVideoInfo = { chapters?: YouTubeChapter[] }
+type TranscriptResult = { chunks: Chunk[]; warning?: string }
 
 /**
  * Converts a time string in HH:MM:SS format to total seconds.
@@ -41,8 +42,9 @@ type YouTubeVideoInfo = { chapters?: YouTubeChapter[] }
  * @returns Total number of seconds
  */
 function timeToSeconds(t: string): number {
-  const [h, m, s] = t.split(':')
-  return Number(h) * 3600 + Number(m) * 60 + Number(s)
+  const parts = t.split(':').map(Number)
+  if (parts.length === 2) return parts[0] * 60 + parts[1]
+  return parts[0] * 3600 + parts[1] * 60 + parts[2]
 }
 
 /**
@@ -73,7 +75,7 @@ function wordArraysEqual(a: string[], b: string[]): boolean {
 function parseAutoCaptionVtt(vtt: string): Fragment[] {
   const fragments: Fragment[] = []
   const blocks = vtt.split(/\n\s*\n/)
-  const cueTimeRe = /^(\d{2}:\d{2}:\d{2}\.\d{3}) --> (\d{2}:\d{2}:\d{2}\.\d{3})/
+  const cueTimeRe = /^(\d{1,2}:\d{2}(?::\d{2})?\.\d{3}) --> (\d{1,2}:\d{2}(?::\d{2})?\.\d{3})/
   const fullWords: string[] = []
 
   for (const block of blocks) {
@@ -138,7 +140,7 @@ function chunkFragments(fragments: Fragment[]): Chunk[] {
  * @param youtubeId - YouTube video ID
  * @returns Object containing chapters array and transcript chunks array
  */
-async function ingestOne(youtubeId: string): Promise<{ chapters: Chapter[]; chunks: Chunk[] }> {
+async function ingestOne(youtubeId: string): Promise<{ chapters: Chapter[]; transcript: TranscriptResult }> {
   const url = `https://www.youtube.com/watch?v=${youtubeId}`
 
   const info = (await youtubedl(url, {
@@ -147,12 +149,15 @@ async function ingestOne(youtubeId: string): Promise<{ chapters: Chapter[]; chun
     noWarnings: true,
   })) as unknown as YouTubeVideoInfo
 
-  const chapters: Chapter[] = (info.chapters ?? []).map((chapter) => ({
-    startSeconds: Math.round(chapter.start_time),
-    label: chapter.title,
-  }))
+  const chapters: Chapter[] = (info.chapters ?? [])
+    .map((chapter) => ({
+      startSeconds: Math.round(chapter.start_time),
+      label: chapter.title.trim(),
+    }))
+    .filter((chapter) => chapter.label.length > 0 && Number.isFinite(chapter.startSeconds))
+    .sort((a, b) => a.startSeconds - b.startSeconds)
 
-  let chunks: Chunk[] = []
+  let transcript: TranscriptResult = { chunks: [] }
   const workDir = mkdtempSync(path.join(tmpdir(), 'vertex-ingest-'))
   try {
     const outputTemplate = path.join(workDir, 'sub.%(ext)s')
@@ -166,14 +171,26 @@ async function ingestOne(youtubeId: string): Promise<{ chapters: Chapter[]; chun
     })
     const vttPath = path.join(workDir, 'sub.en.vtt')
     const vtt = readFileSync(vttPath, 'utf-8')
-    chunks = chunkFragments(parseAutoCaptionVtt(vtt))
-  } catch {
-    // No English auto-captions for this video — chunks stays empty, chapters still work.
+    const chunks = chunkFragments(parseAutoCaptionVtt(vtt))
+    transcript = chunks.length
+      ? { chunks }
+      : { chunks, warning: 'English captions were empty or could not be parsed' }
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+    transcript = {
+      chunks: [],
+      warning: `English captions unavailable: ${message}`,
+    }
   } finally {
     rmSync(workDir, { recursive: true, force: true })
   }
 
-  return { chapters, chunks }
+  return { chapters, transcript }
+}
+
+function documentIdForVideo(youtubeId: string): string {
+  const safeId = youtubeId.replace(/[^A-Za-z0-9_-]/g, '-')
+  return `video.yt-${safeId}`
 }
 
 /**
@@ -193,22 +210,23 @@ async function main() {
     seenIds.add(youtubeId)
 
     try {
-      const { chapters, chunks } = await ingestOne(youtubeId)
+      const { chapters, transcript } = await ingestOne(youtubeId)
       await client.createOrReplace({
         // "yt-" prefix keeps the id valid even when a YouTube id itself
         // starts with a hyphen (e.g. "-QVoIxEpFkM"), which Sanity rejects
         // as the first character right after the "video." separator.
-        _id: `video.yt-${youtubeId}`,
+        _id: documentIdForVideo(youtubeId),
         _type: 'video',
         id: youtubeId,
         url: `https://www.youtube.com/watch?v=${youtubeId}`,
         chapters,
-        chunks,
+        chunks: transcript.chunks,
       })
       processed++
       console.log(
-        `[ok] ${youtubeId} — ${chapters.length} chapters, ${chunks.length} chunks (${processed}/${seenIds.size})`,
+        `[ok] ${youtubeId} — ${chapters.length} chapters, ${transcript.chunks.length} chunks (${processed}/${seenIds.size})`,
       )
+      if (transcript.warning) console.warn(`[warn] ${youtubeId} — ${transcript.warning}`)
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err)
       failures.push({ id: youtubeId, error: message })

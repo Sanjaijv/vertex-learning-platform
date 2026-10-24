@@ -1,7 +1,6 @@
 "use client";
 
 import { ArrowRight } from "lucide-react";
-import Link from "next/link";
 import posthog from "posthog-js";
 
 export function CourseStartLink({ courseSlug, href }: { courseSlug: string; href: string }) {
@@ -15,8 +14,8 @@ export function CourseStartLink({ courseSlug, href }: { courseSlug: string; href
   };
 
   return (
-    <Link href={href} className="btn btn-primary" onClick={handleClick}>
+    <a href={href} className="btn btn-primary" onClick={handleClick}>
       Start Course <ArrowRight />
-    </Link>
+    </a>
   );
 }

@@ -20,10 +20,7 @@ export function PostHogIdentity() {
         posthog.reset();
       }
 
-      posthog.identify(user.id, {
-        email: user.primaryEmailAddress?.emailAddress,
-        name: user.fullName ?? undefined,
-      });
+      posthog.identify(user.id);
       identifiedUserId.current = user.id;
       return;
     }

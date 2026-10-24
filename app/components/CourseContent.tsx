@@ -1,7 +1,6 @@
 "use client";
 
 import { ChevronDown, Clock3, LockKeyhole, Play } from "lucide-react";
-import Link from "next/link";
 import posthog from "posthog-js";
 import { useState } from "react";
 import { formatDuration } from "../lib/format";
@@ -84,11 +83,11 @@ export function CourseContent({ courseSlug, modules }: { courseSlug: string; mod
               <ul className="course-content-lessons">
                 {module.lessons.map((lesson) => (
                   <li key={lesson._id}>
-                    <Link href={`/lessons/${lesson.slug}`}>
+                    <a href={`/lessons/${lesson.slug}`}>
                       {lesson.freePreview ? <Play aria-hidden="true" /> : <LockKeyhole aria-hidden="true" />}
                       <span>{lesson.title}</span>
                       <em>{formatDuration(lesson.duration ?? 0)}</em>
-                    </Link>
+                    </a>
                   </li>
                 ))}
               </ul>

@@ -65,10 +65,10 @@ export function LessonOutline({
                     {module.lessons.map((lesson) => {
                       const current = lesson._id === currentLessonId;
                       return <li key={lesson._id} className={current ? "is-current" : ""}>
-                        {lesson.slug ? <Link href={`/lessons/${lesson.slug}`} aria-current={current ? "page" : undefined}>
+                        {lesson.slug ? <a href={`/lessons/${lesson.slug}`} aria-current={current ? "page" : undefined}>
                           <span className="lesson-outline-node" aria-hidden="true">{current ? <Play fill="currentColor" /> : null}</span>
                           <span><strong>{lesson.title}</strong><small>{current ? "Now playing" : formatDuration(lesson.duration ?? 0)}</small></span>
-                        </Link> : <span className="lesson-outline-unlinked"><span className="lesson-outline-node" /><span>{lesson.title}</span></span>}
+                        </a> : <span className="lesson-outline-unlinked"><span className="lesson-outline-node" /><span>{lesson.title}</span></span>}
                       </li>;
                     })}
                   </ol>
