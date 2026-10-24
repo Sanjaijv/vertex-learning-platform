@@ -22,6 +22,17 @@ function resultLink(result: SearchResult) {
 
 function ResultCard({ result }: { result: SearchResult }) {
   const isVideo = result.kind === 'video';
+  const handleOpen = () => {
+    if (!process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN || !process.env.NEXT_PUBLIC_POSTHOG_HOST) return;
+    posthog.capture('search_result_opened', {
+      result_type: result.kind,
+      course_slug: result.courseSlug,
+      lesson_slug: result.lessonSlug,
+      module_position: result.moduleNumber,
+      lesson_position: result.lessonNumber,
+      ...(isVideo ? { start_seconds: result.startSeconds ?? 0 } : {}),
+    });
+  };
   return <article className={`search-card search-card-${result.kind}`}>
     <div className={`search-card-image ${!isVideo ? 'search-card-points' : ''}`}>
       {isVideo ? <>
@@ -41,10 +52,10 @@ function ResultCard({ result }: { result: SearchResult }) {
     </div>
     <div className="search-card-side">
       <span className={`search-kind search-kind-${result.kind}`}>{isVideo ? 'VIDEO' : 'LESSON'}</span>
-      <Link href={resultLink(result)} className="search-result-action">
+      <a href={resultLink(result)} className="search-result-action" onClick={handleOpen}>
         {isVideo ? <><CirclePlay aria-hidden="true" />Watch from {time(result.startSeconds ?? 0)}</> : 'View lesson'}
         <ChevronRight aria-hidden="true" />
-      </Link>
+      </a>
     </div>
   </article>;
 }
@@ -97,7 +108,7 @@ export function SearchResults({ query }: { query: string }) {
       <Search aria-hidden="true" />
       <label className="sr-only" htmlFor="search-page-input">Search courses and lessons</label>
       <input id="search-page-input" name="q" type="search" defaultValue={query} minLength={2} maxLength={160} placeholder="Search courses and lessons" required />
-      <button type="submit" aria-label="Search"><span>Search</span><ArrowRight aria-hidden="true" /></button>
+      <button type="submit" aria-label="Submit search"><kbd>⌘</kbd><kbd>K</kbd></button>
     </form>
 
     {response?.total ? <div className="search-toolbar">

@@ -1,0 +1,32 @@
+[
+  {
+    "event_name": "search_result_opened",
+    "event_description": "A learner opens a lesson or video-moment search result.",
+    "file": "app/search/search-results.tsx"
+  },
+  {
+    "event_name": "video_played",
+    "event_description": "A lesson video starts playing for the first time in a lesson view.",
+    "file": "app/components/LessonVideo.tsx"
+  },
+  {
+    "event_name": "video_watch_depth_reached",
+    "event_description": "A learner reaches a tracked percentage milestone of a lesson video.",
+    "file": "app/components/LessonVideo.tsx"
+  },
+  {
+    "event_name": "lesson_resume_used",
+    "event_description": "A learner starts a lesson video from a non-zero resume or search timestamp.",
+    "file": "app/components/LessonVideo.tsx"
+  },
+  {
+    "event_name": "lesson_completed",
+    "event_description": "A learner reaches the end of a lesson video.",
+    "file": "app/components/LessonVideo.tsx"
+  },
+  {
+    "event_name": "lesson_notes_viewed",
+    "event_description": "A learner opens the Notes tab on a lesson.",
+    "file": "app/components/LessonTabs.tsx"
+  }
+]
